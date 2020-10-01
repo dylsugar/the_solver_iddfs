@@ -13,6 +13,6 @@ Instructions:
 	2) This should give the output of:
 
 						Moves: R U L L D R D R D
-						Number of Nodes expanded: 16772
-						Time Taken: 3.871
-						Memory Used: 228192 kb 
+						Number of Nodes expanded: 10
+						Time Taken: 0.7177042961120605
+						
