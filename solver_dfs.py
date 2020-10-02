@@ -25,6 +25,7 @@ class Board:
                 new_tiles[empty_index+self.size],new_tiles[empty_index] = new_tiles[empty_index],new_tiles[empty_index+self.size] 
         return Board(new_tiles)
 
+#node class 
 class Node:
     def __init__(self,state,parent,action):
         self.state = state
@@ -40,7 +41,7 @@ class Node:
     def __hash__(self):
         return hash(self.state)
 
-
+#get all the child nodes of the parent arg
 def get_children(parent_node):
     children = []
     actions = ['L','R','U','D']
@@ -50,7 +51,7 @@ def get_children(parent_node):
         children.append(child_node)
     return children
 
-
+#uses hash to walk back states to find original board tiles
 def find_path(node):
     path = []
     while(node.parent is not None):
@@ -63,39 +64,40 @@ def find_path(node):
 def goal_test():
         return ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','0']
 
-
+#implemented IDDFS
 def IDDFS(src,target,max_depth):
     start_time = time.time()
-    count = 0
-    for limit in range(max_depth):
+    count = [] #weird bc count value would not save when I would increment it
+               #so I had to make this list in order to save all the states visited
+    for limit in range(max_depth):#for loop to check through each depth 
         if DLS(src,target,limit,count) == True:
             end_time = time.time()
-            print("Time Taken: " + str(end_time - start_time))
+            print("Number of Nodes Expanded: " + str(len(count)))
+            print("Time Taken: " + str(round(end_time - start_time,3)))
+            print("Memory Used: "+ str(round((sys.getsizeof(count)/1000),0)) + " KB")
             return True
 
     return False
 
 
 def DLS(src,target,limit,count):
-    count+=1
-    if(src.state.tiles == target):
+    count.append(src) #every call to DLS is a state visited
+    if(src.state.tiles == target):  #if the goal state is met
         print("Moves: " + str(' '.join(find_path(src))))
-        print("Number of Nodes Expanded: " + str(count)) 
         return True
-    if limit <= 0:
+    if limit <= 0: #if the root has been hit
         return False
     
-    for child in get_children(src):
-        if DLS(child,goal_test(),limit-1,count) == True:
+    for child in get_children(src):#loops through actions of child in recursion loop
+        if DLS(child,goal_test(),limit-1,count) == True: # -1 to walk back down to root
             return True
     return False
 
 
 def main(argv):
     max_depth = 10
-    root = Node(Board(argv),None,None)
-    x = IDDFS(root,goal_test(),max_depth)
-    
+    root = Node(Board(argv),None,None) #creates the root node
+    IDDFS(root,goal_test(),max_depth) 
 
 if __name__=="__main__":
     main(sys.argv[1:])
